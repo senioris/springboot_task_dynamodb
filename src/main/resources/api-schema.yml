@@ -1,0 +1,290 @@
+openapi: 3.0.0
+x-stoplight:
+  id: qmxs0vr6i2vlj
+info:
+  title: TODO API Document
+  version: 0.0.1
+  description: ''
+servers:
+  - url: 'http://localhost:8080'
+tags:
+  - name: opts
+    description: Maintenance API
+  - name: tasks
+    description: Tasks API
+paths:
+  /health:
+    parameters: []
+    get:
+      summary: Health check
+      tags:
+        - opts
+      responses:
+        '200':
+          description: OK
+      operationId: checkHealth
+      x-stoplight:
+        id: 1x15dwycc49t5
+  '/tasks/{taskId}':
+    get:
+      summary: Get a task
+      tags:
+        - tasks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      operationId: showTask
+      x-stoplight:
+        id: bi0f5eklbieto
+    put:
+      summary: Update a task
+      operationId: updateTask
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+      x-stoplight:
+        id: zfipgj1f9de2c
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskForm'
+    parameters:
+      - schema:
+          type: string
+          format: int64
+        name: taskId
+        in: path
+        required: true
+    delete:
+      summary: Delete a task
+      tags: []
+      responses:
+        '204':
+          description: No Content
+      operationId: deleteTask
+      x-stoplight:
+        id: k1puytzb0kvcr
+  /tasks:
+    post:
+      summary: Create task
+      tags:
+        - tasks
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDto'
+          headers:
+            location:
+              schema:
+                type: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+      operationId: createTask
+      x-stoplight:
+        id: vh3r493c872by
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskForm'
+    get:
+      summary: Get tasks
+      tags:
+        - tasks
+      operationId: listTasks
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskListDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BadRequestError'
+      x-stoplight:
+        id: gddqmrrijr0os
+      parameters:
+        - schema:
+            type: integer
+            minimum: 0
+            format: int64
+            default: 0
+          in: query
+          name: offset
+        - schema:
+            type: integer
+            format: int32
+            maximum: 100
+            minimum: 1
+            default: 10
+          in: query
+          name: limit
+components:
+  schemas:
+    TaskDto:
+      title: TaskDto
+      x-stoplight:
+        id: sgwabvs0sw7v3
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: wcgsysh6jivse
+        title:
+          type: string
+          x-stoplight:
+            id: 65jp0gtii826w
+      required:
+        - id
+        - title
+    TaskForm:
+      title: TaskForm
+      x-stoplight:
+        id: g3b35po1fqv1m
+      type: object
+      properties:
+        title:
+          type: string
+          x-stoplight:
+            id: 9dh2foqhgenb6
+          minLength: 1
+          maxLength: 256
+      required:
+        - title
+    NotFoundError:
+      title: NotFoundError
+      x-stoplight:
+        id: wk21u2c0eliqf
+      type: object
+      properties:
+        title:
+          type: string
+          x-stoplight:
+            id: pgx99td7ksh02
+          default: Resource Not Found
+        description:
+          type: string
+          x-stoplight:
+            id: l1btwq0omur03
+      required:
+        - title
+        - description
+    BadRequestError:
+      title: BadRequestError
+      x-stoplight:
+        id: 5094n8fp5ivz0
+      type: object
+      properties:
+        title:
+          type: string
+          x-stoplight:
+            id: h9v0av2b9ru1c
+          default: Bad Request
+        detail:
+          type: string
+          x-stoplight:
+            id: 9u7s71exfighn
+          default: Bad request parameters.
+        invalid-params:
+          type: array
+          x-stoplight:
+            id: x6sn60e63rbgs
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+      required:
+        - title
+        - detail
+        - invalid-params
+    InvalidParam:
+      title: InvalidParam
+      x-stoplight:
+        id: prkax7pchzon2
+      type: object
+      properties:
+        name:
+          type: string
+          x-stoplight:
+            id: jrawphherdr08
+        reason:
+          type: string
+          x-stoplight:
+            id: gpszayu8xw86f
+    TaskListDto:
+      title: TaskListDto
+      x-stoplight:
+        id: 0auzhz5g915ox
+      type: object
+      properties:
+        results:
+          x-stoplight:
+            id: fr3wqcedn1pi3
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskDto'
+        page:
+          $ref: '#/components/schemas/PageDto'
+      required:
+        - results
+        - page
+    PageDto:
+      title: PageDto
+      x-stoplight:
+        id: ojmx586dr447g
+      type: object
+      properties:
+        offset:
+          type: integer
+          x-stoplight:
+            id: du474v44n47vi
+          format: int64
+        limit:
+          type: integer
+          x-stoplight:
+            id: y3oew52avsjkp
+          format: int32
+        size:
+          type: integer
+          x-stoplight:
+            id: exphicm8qcs3z
+          format: int32
+      required:
+        - offset
+        - limit
+        - size
+x-internal: false

@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: javadev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ..:/workspace:cached
+    tty: true
+    network_mode: service:aws
+    
+  aws:
+    container_name: localstack
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
