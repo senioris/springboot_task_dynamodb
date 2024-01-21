@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dynamodb.repository.TaskRepository;
@@ -12,14 +11,12 @@ import com.example.demo.dynamodb.model.Task;
 import com.example.demo.service.task.TaskEntity;
 import com.example.demo.service.task.exception.TaskEntityNotFoundExeption;
 
-@Service
-public class TaskService {
-    TaskRepository repository;
+import lombok.RequiredArgsConstructor;
 
-    @Autowired
-    public TaskService(TaskRepository repository) {
-        this.repository = repository;
-    }
+@Service
+@RequiredArgsConstructor
+public class TaskService {
+    private final TaskRepository repository;
 
     public TaskEntity find(String taskId) {
         return repository.select(taskId)
