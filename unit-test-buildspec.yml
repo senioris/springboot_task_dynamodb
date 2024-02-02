@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - cd unit-test
+      - docker-compose build
+
+  build:
+    commands:
+      - echo Test started on `date`
+      - pwd
+      - docker-compose run app
+
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - docker-compose down
+
+reports:
+  junit:
+    files:
+      - '**/*'
+    base-directory: "build/test-results"
+    file-format: 'JUnitXML'
+  jacoco-report:
+    files:
+      - 'build/reports/jacoco/test/jacocoTestReport.xml'
+    file-format: 'JACOCOXML'      

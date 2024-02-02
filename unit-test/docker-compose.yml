@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  app:
+    container_name: java
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /workspace
+    volumes:
+      - /home/senioris/spring-boot/springboot_task_dynamodb:/workspace
+    depends_on:
+      - "aws"    
+    network_mode: service:aws
+    command: >
+      sh -c "
+      cd /workspace/local-template &&
+      sh deploy.sh &&
+      cd /workspace &&
+      sh gradlew test      
+      "
+
+  aws:
+    container_name: localstack
+    image: public.ecr.aws/localstack/localstack:latest
+    ports:
+      - "4566:4566"

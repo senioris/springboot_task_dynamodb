@@ -4,6 +4,7 @@ plugins {
 	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.1.4'
 	id "org.openapi.generator" version "7.2.0"
+	id 'jacoco'
 }
 
 ext {
@@ -72,3 +73,24 @@ task buildSpringApi(type: org.openapitools.generator.gradle.plugin.tasks.Generat
 }
 
 compileJava.dependsOn tasks.buildSpringApi
+
+test.finalizedBy jacocoTestReport
+
+def coverageExcludeFiles = [
+	'**/*$*.class',
+	'**/*$lambda$*.class',
+]
+
+jacocoTestReport {
+    reports {
+        html.required = true
+		xml.required = true
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(
+                    dir: it,
+                    exclude: coverageExcludeFiles)
+        })
+    }
+}
